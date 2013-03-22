@@ -12,8 +12,25 @@ public class ClueGame {
 	private int turn;
 	private Board board;
 	
+	public ClueGame() {
+		cards = new LinkedList<Card>();
+		toDeal = new LinkedList<Card>();
+		comps = new LinkedList<ComputerPlayer>();
+		player = new HumanPlayer("Miss Scarlett", cards, "Red", 297);
+		comps.add(new ComputerPlayer("Miss Scarlett", cards, "Red", 297));
+		comps.add(new ComputerPlayer("Miss Scarlett", cards, "Red", 297));
+		comps.add(new ComputerPlayer("Miss Scarlett", cards, "Red", 297));
+		comps.add(new ComputerPlayer("Miss Scarlett", cards, "Red", 297));
+		comps.add(new ComputerPlayer("Miss Scarlett", cards, "Red", 297)); //placeholder bots for tests
+	}
+	
 	public Card makeSuggestion(Card a, Card b, Card c, int playerIndex) {
-		return null;
+		return new Card("Colonel Mustard", "Person"); //placeholder card, not called in tests
+		//should return null if no disproving card is shown
+	}
+	
+	public Card makeSuggestion(int playerIndex) {
+		return new Card("Colonel Mustard", "Person");
 	}
 	
 	public LinkedList<Card> getCards() {

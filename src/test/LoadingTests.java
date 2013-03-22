@@ -14,11 +14,11 @@ import cluePlayers.ComputerPlayer;
 import cluePlayers.Player;
 
 public class LoadingTests {
-	ClueGame game;
+	private static ClueGame game;
 	public static final int NUM_COLUMNS = 18;
 	
 	@BeforeClass
-	public void setup() {
+	public static void setup() {
 		game = new ClueGame();
 	}
 	

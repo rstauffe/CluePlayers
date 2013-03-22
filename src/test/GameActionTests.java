@@ -17,10 +17,10 @@ import cluePlayers.HumanPlayer;
 import cluePlayers.Player;
 
 public class GameActionTests {
-	ClueGame game;
-
+	private static ClueGame game;
+	
 	@BeforeClass
-	public void setup() {
+	public static void setup() {
 		game = new ClueGame();
 	}
 
@@ -210,9 +210,17 @@ public class GameActionTests {
 		players.add(player4);
 		players.add(player5);
 		game.setComps(players);
-		Card shown = game.makeSuggestion(new Card("Mrs White", "Person"), 
-				new Card("Wrench", "Weapon"), new Card("Pool", "Room"), 0);
-		assertTrue(shown.equals(new Card("Mrs White", "Person")) || (shown.equals(new Card("Wrench", "Weapon"))));
+		int white = 0;
+		int wrench = 0;
+		for (int i = 0; i < 100; i++) {
+			Card shown = game.makeSuggestion(new Card("Mrs White", "Person"), 
+					new Card("Wrench", "Weapon"), new Card("Pool", "Room"), 0);
+			if (shown == new Card("Mrs White", "Person")) white++;
+			if (shown == new Card("Wrench", "Weapon")) wrench++;
+		}
+		assertEquals(white + wrench, 100);
+		assertTrue(white > 0);
+		assertTrue(wrench > 0);
 	}
 
 	@Test
@@ -257,9 +265,17 @@ public class GameActionTests {
 		players.add(player4);
 		players.add(player5);
 		game.setComps(players);
-		Card shown = game.makeSuggestion(new Card("Mrs White", "Person"), 
-				new Card("Wrench", "Weapon"), new Card("Pool", "Room"), 0);
-		assertTrue(shown.equals(new Card("Mrs White", "Person")) || (shown.equals(new Card("Pool", "Room"))));
+		int white = 0;
+		int pool = 0;
+		for (int i = 0; i < 100; i++) {
+			Card shown = game.makeSuggestion(new Card("Mrs White", "Person"), 
+					new Card("Wrench", "Weapon"), new Card("Pool", "Room"), 0);
+			if (shown == new Card("Mrs White", "Person")) white++;
+			if (shown == new Card("Pool", "Room")) pool++;
+		}
+		assertEquals(white + pool, 100);
+		assertTrue(white > 0);
+		assertTrue(pool > 0);
 	}
 
 	@Test 
@@ -306,7 +322,7 @@ public class GameActionTests {
 		game.setComps(players);
 		Card shown = game.makeSuggestion(new Card("Mrs White", "Person"), 
 				new Card("Wrench", "Weapon"), new Card("Pool", "Room"), 0);
-		assertTrue(shown.equals(new Card("Mrs White", "Person")));
+		assertEquals(shown, new Card("Mrs White", "Person"));
 	}
 
 	@Test
@@ -353,7 +369,7 @@ public class GameActionTests {
 		game.setComps(players);
 		Card shown = game.makeSuggestion(new Card("Mrs White", "Person"), 
 				new Card("Wrench", "Weapon"), new Card("Pool", "Room"), 2);
-		assertTrue(shown.equals(null)); //should find no matches
+		assertEquals(shown, null); //should find no matches
 	}
 
 	@Test
@@ -400,11 +416,70 @@ public class GameActionTests {
 		game.setComps(players);
 		Card shown = game.makeSuggestion(new Card("Mrs White", "Person"), 
 				new Card("Wrench", "Weapon"), new Card("Pool", "Room"), 3);
-		assertTrue(shown.equals(null));
+		assertEquals(shown, null);
 	}
 
 	@Test
 	public void testSuggestionRandom() {
-
+		LinkedList<Card> cardsHuman = new LinkedList<Card>();
+		LinkedList<Card> cards1 = new LinkedList<Card>();
+		LinkedList<Card> cards2 = new LinkedList<Card>();
+		LinkedList<Card> cards3 = new LinkedList<Card>();
+		LinkedList<Card> cards4 = new LinkedList<Card>();
+		LinkedList<Card> cards5 = new LinkedList<Card>();
+		cardsHuman.add(new Card("Colonel Mustard", "Person"));
+		cardsHuman.add(new Card("Professor Plum", "Person"));
+		cardsHuman.add(new Card("Bowling Alley", "Room"));
+		cards1.add(new Card("Miss Scarlett", "Person"));
+		cards1.add(new Card("Study", "Room"));
+		cards1.add(new Card("Rope", "Weapon"));
+		cards2.add(new Card("Reverend Green", "Person")); 
+		cards2.add(new Card("Revolver", "Weapon")); 
+		cards2.add(new Card("Foyer", "Room"));
+		cards3.add(new Card("Mrs Peacock", "Person"));
+		cards3.add(new Card("Candlestick", "Weapon"));
+		cards3.add(new Card("Knife", "Weapon"));
+		cards4.add(new Card("Lounge", "Room"));
+		cards4.add(new Card("Great Hall", "Room")); 
+		cards4.add(new Card("Lead Pipe", "Weapon"));
+		cards5.add(new Card("Bedroom", "Room"));
+		cards5.add(new Card("Library", "Room"));
+		cards5.add(new Card("Kitchen", "Room"));
+		//creates the players with these hands
+		HumanPlayer human = new HumanPlayer("Professor Plum", cardsHuman, "Purple", 0);
+		ComputerPlayer player1 = new ComputerPlayer("Miss Scarlett", cards1, "Red", 297);
+		ComputerPlayer player2 = new ComputerPlayer("Mrs White", cards2, "White", 297);
+		ComputerPlayer player3 = new ComputerPlayer("Colonel Mustard", cards3, "Yellow", 297);
+		ComputerPlayer player4 = new ComputerPlayer("Mrs Peacock", cards4, "Blue", 297);
+		ComputerPlayer player5 = new ComputerPlayer("Reverend Green", cards5, "Green", 297);
+		LinkedList<ComputerPlayer> players = new LinkedList<ComputerPlayer>();
+		//adds the players to a LinkedList so game can iterate
+		game.setPlayer(human);
+		players.add(player1);
+		players.add(player2);
+		players.add(player3);
+		players.add(player4);
+		players.add(player5);
+		game.setComps(players);
+		//sets the list of cards seen by player 2
+		LinkedList<Card> cardsSeen = game.getCards();
+		cardsSeen.remove(new Card("Mrs White", "Person"));
+		cardsSeen.remove(new Card("Wrench", "Weapon"));
+		cardsSeen.remove(new Card("Pool", "Room"));
+		cardsSeen.remove(new Card("Mrs Peacock", "Person"));
+		player2.setSeen(cardsSeen);
+		int white = 0;
+		int peacock = 0;
+		for (int i = 0; i < 100; i++) {
+			Card shown = game.makeSuggestion(2); //generic computer suggestion, with random choice
+			if (new Card("Mrs Peacock", "Person") == shown) {
+				peacock++; //sees someone else has Peacock
+			} if (shown == null) {
+				white++; //since White is in closet, won't return anything
+			}
+		}
+		assertEquals(white + peacock, 100);
+		assertTrue(white > 0);
+		assertTrue(peacock > 0);
 	}
 }

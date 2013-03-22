@@ -24,6 +24,7 @@ public class Card {
 	}
 
 	public boolean equals(Card other) {
+		if (other == null) return false;
 		return ((other.type == type) && (other.name == name));
 	}
 	
