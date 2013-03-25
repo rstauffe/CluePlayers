@@ -20,7 +20,7 @@ import cluePlayers.Player;
 public class GameActionTests {
 	private static ClueGame game;
 	private static Board board;
-	
+
 	@BeforeClass
 	public static void setup() {
 		game = new ClueGame();
@@ -168,7 +168,7 @@ public class GameActionTests {
 		game.setComps(players);
 		Card shown = game.makeSuggestion(new Card("Mrs White", "Person"), 
 				new Card("Wrench", "Weapon"), new Card("Pool", "Room"), 0);
-		//System.out.println(shown);
+		//System.out.println("One-one, card = " + shown);
 		assertEquals(shown, new Card("Mrs White", "Person"));
 	}
 
@@ -216,14 +216,15 @@ public class GameActionTests {
 		game.setComps(players);
 		int white = 0;
 		int wrench = 0;
+		//System.out.println("One-two");
 		for (int i = 0; i < 100; i++) {
 			Card shown = game.makeSuggestion(new Card("Mrs White", "Person"), 
 					new Card("Wrench", "Weapon"), new Card("Pool", "Room"), 0);
-			System.out.println("Shown = " + shown);
+			//System.out.println("Shown = " + shown);
 			Card w = new Card("Wrench", "Weapon");
-			System.out.println(w);
-			if (shown.equals(new Card("Mrs White", "Person"))) white++;
-			if (shown.equals(new Card("Wrench", "Weapon"))) wrench++;
+			//System.out.println(w);
+			if (new Card("Mrs White", "Person").equals(shown)) white++;
+			if (new Card("Wrench", "Weapon").equals(shown)) wrench++;
 		}
 		assertEquals(white + wrench, 100);
 		assertTrue(white > 0);
@@ -277,8 +278,8 @@ public class GameActionTests {
 		for (int i = 0; i < 100; i++) {
 			Card shown = game.makeSuggestion(new Card("Mrs White", "Person"), 
 					new Card("Wrench", "Weapon"), new Card("Pool", "Room"), 0);
-			if (shown.equals(new Card("Mrs White", "Person"))) white++;
-			if (shown.equals(new Card("Pool", "Room"))) pool++;
+			if (new Card("Mrs White", "Person").equals(shown)) white++;
+			if (new Card("Pool", "Room").equals(shown)) pool++;
 		}
 		assertEquals(white + pool, 100);
 		assertTrue(white > 0);
@@ -328,7 +329,7 @@ public class GameActionTests {
 		players.add(player5);
 		game.setComps(players);
 		Card shown = game.makeSuggestion(new Card("Mrs White", "Person"), 
-				new Card("Wrench", "Weapon"), new Card("Pool", "Room"), 0);
+				new Card("Wrench", "Weapon"), new Card("Pool", "Room"), 2);
 		assertEquals(shown, new Card("Mrs White", "Person"));
 	}
 
@@ -415,18 +416,18 @@ public class GameActionTests {
 		LinkedList<ComputerPlayer> players = new LinkedList<ComputerPlayer>();
 		//adds the players to a LinkedList so game can iterate
 		game.setPlayer(human);
+		LinkedList<Card> cardsSeen = (LinkedList<Card>) game.getCards().clone();
+		cardsSeen.remove(new Card("Mrs White", "Person"));
+		cardsSeen.remove(new Card("Wrench", "Weapon"));
+		cardsSeen.remove(new Card("Pool", "Room"));
+		System.out.println(cardsSeen.size());
+		player2.setSeen(cardsSeen);
 		players.add(player1);
 		players.add(player2);
 		players.add(player3);
 		players.add(player4);
 		players.add(player5);
 		game.setComps(players);
-		LinkedList<Card> cardsSeen = (LinkedList<Card>) game.getCards().clone();
-		//System.out.println(cardsSeen);
-		cardsSeen.remove(new Card("Mrs White", "Person"));
-		cardsSeen.remove(new Card("Wrench", "Weapon"));
-		cardsSeen.remove(new Card("Pool", "Room"));
-		player2.setSeen(cardsSeen);
 		Card shown = game.makeSuggestion(2);
 		assertEquals(shown, null);
 	}
@@ -467,12 +468,6 @@ public class GameActionTests {
 		LinkedList<ComputerPlayer> players = new LinkedList<ComputerPlayer>();
 		//adds the players to a LinkedList so game can iterate
 		game.setPlayer(human);
-		players.add(player1);
-		players.add(player2);
-		players.add(player3);
-		players.add(player4);
-		players.add(player5);
-		game.setComps(players);
 		//sets the list of cards seen by player 2
 		LinkedList<Card> cardsSeen = game.getCards();
 		cardsSeen.remove(new Card("Mrs White", "Person"));
@@ -480,6 +475,12 @@ public class GameActionTests {
 		cardsSeen.remove(new Card("Pool", "Room"));
 		cardsSeen.remove(new Card("Mrs Peacock", "Person"));
 		player2.setSeen(cardsSeen);
+		players.add(player1);
+		players.add(player2);
+		players.add(player3);
+		players.add(player4);
+		players.add(player5);
+		game.setComps(players);
 		int white = 0;
 		int peacock = 0;
 		for (int i = 0; i < 100; i++) {

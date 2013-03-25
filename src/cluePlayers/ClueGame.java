@@ -19,6 +19,7 @@ public class ClueGame {
 	private int turn;
 	private Board board;
 	private Random rand;
+	private int numActive; //number of currently active players
 
 	@SuppressWarnings("unchecked")
 	public ClueGame() {
@@ -27,6 +28,7 @@ public class ClueGame {
 		answer = new LinkedList<Card>();
 		comps = new LinkedList<ComputerPlayer>();
 		rand = new Random();
+		numActive = 0;
 		try {
 			loadCards("Cards.txt"); //loads cards from file
 			loadPlayers("Players.txt"); //loads players from file
@@ -62,7 +64,11 @@ public class ClueGame {
 		File f = new File(filename);
 		Scanner in = new Scanner(f);
 		loadPlayer(in, 0);
-		while (in.hasNextLine()) loadPlayer(in, 1);
+		numActive++;
+		while (in.hasNextLine()) {
+			loadPlayer(in, 1);
+			numActive++;
+		}
 		in.close();
 	}
 
@@ -106,25 +112,27 @@ public class ClueGame {
 			hand.add(card); //picks a random card to give
 			player.setCards(hand);
 			toDeal.remove(card); //removes the card from the cards left to deal
-			if (curPlayer == 5) curPlayer = 0; //move to next player
+			if (curPlayer == numActive - 1) curPlayer = 0; //move to next player
 			else curPlayer++;
 		}
 	}
 
 	public Card makeSuggestion(Card a, Card b, Card c, int playerIndex) {
 		int currentPlayer = -1; //placeholder number to ensure a different player is picked
-		while (currentPlayer == -1 || currentPlayer == playerIndex) currentPlayer = rand.nextInt(6);
+		while ((currentPlayer == -1) || (currentPlayer == playerIndex)) currentPlayer = rand.nextInt(numActive);
 		Card card = null;
-		for (int numCompared = 0; numCompared < 5; numCompared++) {
-			if (currentPlayer == playerIndex) continue;
-			Player player;
-			if (currentPlayer == 0) player = this.player;
-			else player = comps.get(currentPlayer - 1);
-			//System.out.println("Comparing player " + currentPlayer);
-			card = player.disproveSuggestion(a, b, c);
-			if (card != null) break;
-			if (currentPlayer == 5) currentPlayer = 0; //ensures wrap-around of list
-			else currentPlayer++;
+		for (int numCompared = 0; numCompared < numActive; numCompared++) {
+			if (currentPlayer == playerIndex) {
+				currentPlayer++;
+				continue;
+			}
+			Player curPlayer;
+			if (currentPlayer == 0) curPlayer = player;
+			else curPlayer = comps.get(currentPlayer - 1);
+			card = curPlayer.disproveSuggestion(a, b, c);
+			if (card != null) return card;
+			++currentPlayer; //check next player
+			if (currentPlayer == numActive) currentPlayer = 0; //ensures wrap-around of list
 		}
 		return card; 
 		//should return null if no disproving card is shown
@@ -133,13 +141,14 @@ public class ClueGame {
 	//precondition- only called by computer players (index 1 to 5)- randomizer
 	public Card makeSuggestion(int playerIndex) {
 		LinkedList<Card> seen = comps.get(playerIndex).getSeen();
-		LinkedList<Card> possibilities = cards;
+		LinkedList<Card> possibilities = (LinkedList<Card>) cards.clone();
 		for (Card d : seen) possibilities.remove(d);
+		System.out.println("Possibilities: " + possibilities.size());
 		LinkedList<Card> people = new LinkedList<Card>();
 		LinkedList<Card> weapons = new LinkedList<Card>();
 		LinkedList<Card> rooms = new LinkedList<Card>();
 		sortList(people, weapons, rooms, possibilities);
-		//System.out.println(people.size());
+		System.out.println(people.size());
 		Card a = people.get(rand.nextInt(people.size()));
 		Card b = weapons.get(rand.nextInt(weapons.size()));
 		Card c = rooms.get(rand.nextInt(rooms.size()));
