@@ -12,7 +12,6 @@ import clueGame.RoomCell;
 public class ComputerPlayer extends Player {
 	private LinkedList<Card> seen;
 	private Random rand = new Random();
-	private static Board board = new Board(); //generates board for calcs, only one needed
 
 	public ComputerPlayer(String name, LinkedList<Card> cards, String color, int index) {
 		super(name, cards, color, index);

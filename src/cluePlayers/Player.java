@@ -3,6 +3,7 @@ package cluePlayers;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.Set;
 
 public class Player {
 	private String name;
@@ -41,7 +42,11 @@ public class Player {
 	}
 
 	public HashSet<Card> makeAccusation(Card a, Card b, Card c) {
-		return new HashSet<Card>();
+		HashSet<Card> accuse = new HashSet<Card>();
+		accuse.add(a);
+		accuse.add(b);
+		accuse.add(c);
+		return accuse;
 	}
 
 	public String getName() {

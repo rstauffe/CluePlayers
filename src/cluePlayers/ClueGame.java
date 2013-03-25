@@ -140,15 +140,14 @@ public class ClueGame {
 
 	//precondition- only called by computer players (index 1 to 5)- randomizer
 	public Card makeSuggestion(int playerIndex) {
-		LinkedList<Card> seen = comps.get(playerIndex).getSeen();
-		LinkedList<Card> possibilities = (LinkedList<Card>) cards.clone();
+		LinkedList<Card> seen = comps.get(playerIndex - 1).getSeen();
+		LinkedList<Card> possibilities = new LinkedList<Card>();
+		for (Card c : cards) possibilities.add(c);
 		for (Card d : seen) possibilities.remove(d);
-		System.out.println("Possibilities: " + possibilities.size());
 		LinkedList<Card> people = new LinkedList<Card>();
 		LinkedList<Card> weapons = new LinkedList<Card>();
 		LinkedList<Card> rooms = new LinkedList<Card>();
 		sortList(people, weapons, rooms, possibilities);
-		System.out.println(people.size());
 		Card a = people.get(rand.nextInt(people.size()));
 		Card b = weapons.get(rand.nextInt(weapons.size()));
 		Card c = rooms.get(rand.nextInt(rooms.size()));
