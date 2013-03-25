@@ -120,6 +120,7 @@ public class ClueGame {
 			Player player;
 			if (currentPlayer == 0) player = this.player;
 			else player = comps.get(currentPlayer - 1);
+			//System.out.println("Comparing player " + currentPlayer);
 			card = player.disproveSuggestion(a, b, c);
 			if (card != null) break;
 			if (currentPlayer == 5) currentPlayer = 0; //ensures wrap-around of list

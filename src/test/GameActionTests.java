@@ -219,6 +219,9 @@ public class GameActionTests {
 		for (int i = 0; i < 100; i++) {
 			Card shown = game.makeSuggestion(new Card("Mrs White", "Person"), 
 					new Card("Wrench", "Weapon"), new Card("Pool", "Room"), 0);
+			System.out.println("Shown = " + shown);
+			Card w = new Card("Wrench", "Weapon");
+			System.out.println(w);
 			if (shown.equals(new Card("Mrs White", "Person"))) white++;
 			if (shown.equals(new Card("Wrench", "Weapon"))) wrench++;
 		}

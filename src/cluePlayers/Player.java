@@ -27,12 +27,14 @@ public class Player {
 	}
 
 	public Card disproveSuggestion(Card a, Card b, Card c) {
+		@SuppressWarnings("unchecked") //ignores recast warning
 		LinkedList<Card> hand = (LinkedList<Card>) cards.clone();
 		LinkedList<Card> matches = new LinkedList<Card>();
 		for (Card d : hand) {
 			if ((d.equals(c)) || (d.equals(b)) || (d.equals(a))) matches.add(d);
 		}
 		if (!matches.isEmpty()) {
+			System.out.println(name + " has " + matches);
 			return matches.get(rand.nextInt(matches.size())); //returns a random card from hand if matching
 		}	
 		return null; 
