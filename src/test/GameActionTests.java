@@ -9,6 +9,7 @@ import java.util.Set;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import clueGame.Board;
 import clueGame.BoardCell;
 import cluePlayers.Card;
 import cluePlayers.ClueGame;
@@ -18,14 +19,16 @@ import cluePlayers.Player;
 
 public class GameActionTests {
 	private static ClueGame game;
+	private static Board board;
 	
 	@BeforeClass
 	public static void setup() {
 		game = new ClueGame();
+		board = game.getBoard();
 	}
 
 	@Test
-	public void testAccusationCorrect() {
+	public void testAccusationCorrect() { //tests if an accusation is correct
 		HashSet<Card> answer = new HashSet<Card>();
 		answer.add(new Card("Mrs White", "Person"));
 		answer.add(new Card("Wrench", "Weapon"));
@@ -38,7 +41,7 @@ public class GameActionTests {
 	}
 
 	@Test
-	public void testAccusationPerson() {
+	public void testAccusationPerson() { //tests if the accusation has the wrong person
 		HashSet<Card> answer = new HashSet<Card>();
 		answer.add(new Card("Mrs White", "Person"));
 		answer.add(new Card("Wrench", "Weapon"));
@@ -51,7 +54,7 @@ public class GameActionTests {
 	}
 
 	@Test
-	public void testAccusationWeapon() {
+	public void testAccusationWeapon() { //tests if accusation has wrong weapon
 		HashSet<Card> answer = new HashSet<Card>();
 		answer.add(new Card("Mrs White", "Person"));
 		answer.add(new Card("Wrench", "Weapon"));
@@ -64,7 +67,7 @@ public class GameActionTests {
 	}
 
 	@Test
-	public void testAccusationRoom() {
+	public void testAccusationRoom() { //tests if accusation has wrong room
 		HashSet<Card> answer = new HashSet<Card>();
 		answer.add(new Card("Mrs White", "Person"));
 		answer.add(new Card("Wrench", "Weapon"));
@@ -77,13 +80,13 @@ public class GameActionTests {
 	}
 
 	@Test
-	public void testTargetSelect() {
+	public void testTargetSelect() { //various target tests, see individual comments for different instances
 		LinkedList<Card> cards = new LinkedList<Card>();
 		ComputerPlayer player = new ComputerPlayer("Miss Scarlett", cards, "Red", 233);
-		int location = player.pickLocation(5);
+		int location = player.pickLocation(5, board);
 		assertEquals(location, 267); //should only pick door
 		player = new ComputerPlayer("Miss Scarlett", cards, "Red", 8);
-		location = player.pickLocation(2);
+		location = player.pickLocation(2, board);
 		assertEquals(location, 44); //checks only one location possible
 		//test multiple possible locations at index (10,10)
 		int loc192 = 0;
@@ -91,7 +94,7 @@ public class GameActionTests {
 		int loc226 = 0; //counter variables
 		player = new ComputerPlayer("Miss Scarlett", cards, "Red", 190);
 		for (int i = 0; i < 100; i++) {
-			location = player.pickLocation(2);
+			location = player.pickLocation(2, board);
 			switch (location) {
 			case 192:
 				loc192++;
@@ -114,13 +117,13 @@ public class GameActionTests {
 		//test to not reenter room
 		player = new ComputerPlayer("Miss Scarlett", cards, "Red", 297);
 		for (int i = 0; i < 100; i++) {
-			location = player.pickLocation(3);
+			location = player.pickLocation(3, board);
 			assertFalse(location == 296);
 		}
 	}
 
 	@Test
-	public void testDisproveOneOne() {
+	public void testDisproveOneOne() { //disprove suggestion- one player, one card possible
 		//sorry in advance for the wall of text- couldn't think of a better way to change hands
 		LinkedList<Card> cardsHuman = new LinkedList<Card>(); //create hands for each player
 		LinkedList<Card> cards1 = new LinkedList<Card>();
@@ -165,11 +168,12 @@ public class GameActionTests {
 		game.setComps(players);
 		Card shown = game.makeSuggestion(new Card("Mrs White", "Person"), 
 				new Card("Wrench", "Weapon"), new Card("Pool", "Room"), 0);
+		//System.out.println(shown);
 		assertEquals(shown, new Card("Mrs White", "Person"));
 	}
 
 	@Test
-	public void testDisproveOneTwo() {
+	public void testDisproveOneTwo() { //disprove for one player, two cards
 		LinkedList<Card> cardsHuman = new LinkedList<Card>();
 		LinkedList<Card> cards1 = new LinkedList<Card>();
 		LinkedList<Card> cards2 = new LinkedList<Card>();
@@ -215,8 +219,8 @@ public class GameActionTests {
 		for (int i = 0; i < 100; i++) {
 			Card shown = game.makeSuggestion(new Card("Mrs White", "Person"), 
 					new Card("Wrench", "Weapon"), new Card("Pool", "Room"), 0);
-			if (shown == new Card("Mrs White", "Person")) white++;
-			if (shown == new Card("Wrench", "Weapon")) wrench++;
+			if (shown.equals(new Card("Mrs White", "Person"))) white++;
+			if (shown.equals(new Card("Wrench", "Weapon"))) wrench++;
 		}
 		assertEquals(white + wrench, 100);
 		assertTrue(white > 0);
@@ -224,7 +228,7 @@ public class GameActionTests {
 	}
 
 	@Test
-	public void testDisproveTwoOne() {
+	public void testDisproveTwoOne() { //disprove for two players, one card
 		LinkedList<Card> cardsHuman = new LinkedList<Card>();
 		LinkedList<Card> cards1 = new LinkedList<Card>();
 		LinkedList<Card> cards2 = new LinkedList<Card>();
@@ -270,8 +274,8 @@ public class GameActionTests {
 		for (int i = 0; i < 100; i++) {
 			Card shown = game.makeSuggestion(new Card("Mrs White", "Person"), 
 					new Card("Wrench", "Weapon"), new Card("Pool", "Room"), 0);
-			if (shown == new Card("Mrs White", "Person")) white++;
-			if (shown == new Card("Pool", "Room")) pool++;
+			if (shown.equals(new Card("Mrs White", "Person"))) white++;
+			if (shown.equals(new Card("Pool", "Room"))) pool++;
 		}
 		assertEquals(white + pool, 100);
 		assertTrue(white > 0);
@@ -279,7 +283,7 @@ public class GameActionTests {
 	}
 
 	@Test 
-	public void testDisproveHuman() {
+	public void testDisproveHuman() { //disprove with human player's card only
 		LinkedList<Card> cardsHuman = new LinkedList<Card>();
 		LinkedList<Card> cards1 = new LinkedList<Card>();
 		LinkedList<Card> cards2 = new LinkedList<Card>();
@@ -326,7 +330,7 @@ public class GameActionTests {
 	}
 
 	@Test
-	public void testDisproveSelf() {
+	public void testDisproveSelf() { //disprove when holding suggested card (should return null)
 		LinkedList<Card> cardsHuman = new LinkedList<Card>();
 		LinkedList<Card> cards1 = new LinkedList<Card>();
 		LinkedList<Card> cards2 = new LinkedList<Card>();
@@ -373,7 +377,7 @@ public class GameActionTests {
 	}
 
 	@Test
-	public void testSuggestionCorrect() {
+	public void testSuggestionCorrect() { //tests making a suggestion when all cards are known
 		LinkedList<Card> cardsHuman = new LinkedList<Card>();
 		LinkedList<Card> cards1 = new LinkedList<Card>();
 		LinkedList<Card> cards2 = new LinkedList<Card>();
@@ -414,13 +418,18 @@ public class GameActionTests {
 		players.add(player4);
 		players.add(player5);
 		game.setComps(players);
-		Card shown = game.makeSuggestion(new Card("Mrs White", "Person"), 
-				new Card("Wrench", "Weapon"), new Card("Pool", "Room"), 3);
+		LinkedList<Card> cardsSeen = (LinkedList<Card>) game.getCards().clone();
+		//System.out.println(cardsSeen);
+		cardsSeen.remove(new Card("Mrs White", "Person"));
+		cardsSeen.remove(new Card("Wrench", "Weapon"));
+		cardsSeen.remove(new Card("Pool", "Room"));
+		player2.setSeen(cardsSeen);
+		Card shown = game.makeSuggestion(2);
 		assertEquals(shown, null);
 	}
 
 	@Test
-	public void testSuggestionRandom() {
+	public void testSuggestionRandom() { //tests when AI hasn't seen all other cards
 		LinkedList<Card> cardsHuman = new LinkedList<Card>();
 		LinkedList<Card> cards1 = new LinkedList<Card>();
 		LinkedList<Card> cards2 = new LinkedList<Card>();
@@ -472,7 +481,7 @@ public class GameActionTests {
 		int peacock = 0;
 		for (int i = 0; i < 100; i++) {
 			Card shown = game.makeSuggestion(2); //generic computer suggestion, with random choice
-			if (new Card("Mrs Peacock", "Person") == shown) {
+			if (new Card("Mrs Peacock", "Person").equals(shown)) {
 				peacock++; //sees someone else has Peacock
 			} if (shown == null) {
 				white++; //since White is in closet, won't return anything

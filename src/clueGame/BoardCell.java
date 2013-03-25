@@ -21,9 +21,18 @@ public abstract class BoardCell {
 	public boolean isDoorway() {
 		return false;
 	}
+
+	public int getRow() {
+		return row;
+	}
+
+	public int getCol() {
+		return col;
+	}
 	
 	/*
 	 * Space to enter draw function
 	 */
 	 
+	
 }

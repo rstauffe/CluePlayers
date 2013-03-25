@@ -23,7 +23,7 @@ public class LoadingTests {
 	}
 	
 	@Test
-	public void testHuman() {
+	public void testHuman() { //tests loading human player
 		Player human = game.getPlayer();
 		assertEquals(human.getName(), "Professor Plum");
 		assertEquals(human.getColor(), "Purple");
@@ -31,7 +31,7 @@ public class LoadingTests {
 	}
 
 	@Test
-	public void testComputer1() {
+	public void testComputer1() { //tests loading first AI
 		Player ai1 = game.getComps().get(0);
 		assertEquals(ai1.getName(), "Reverend Green");
 		assertEquals(ai1.getColor(), "Green");
@@ -39,7 +39,7 @@ public class LoadingTests {
 	}
 	
 	@Test
-	public void testComputer5() {
+	public void testComputer5() { //tests loading last AI
 		Player ai5 = game.getComps().get(4);
 		assertEquals(ai5.getName(), "Miss Scarlett");
 		assertEquals(ai5.getColor(), "Red");
@@ -47,7 +47,7 @@ public class LoadingTests {
 	}
 	
 	@Test
-	public void testCards() {
+	public void testCards() { //test loading cards
 		LinkedList<Card> cards = game.getCards();
 		assertEquals(21, cards.size());
 		int rooms = 0;
@@ -66,9 +66,11 @@ public class LoadingTests {
 				continue;
 			}
 		}
+		//test correct number of each type appears in deck
 		assertEquals(people, 6);
 		assertEquals(weapons, 6);
 		assertEquals(rooms, 9);
+		//test specific cards
 		Card card = new Card("Professor Plum", "Person");
 		assertTrue(cards.contains(card));
 		card = new Card("Miss Scarlett", "Person");
@@ -80,24 +82,32 @@ public class LoadingTests {
 	}
 	
 	@Test
-	public void testDeal() {
+	public void testDeal() { //tests dealing cards
 		LinkedList<Card> toDeal = game.getToDeal();
-		assertTrue(toDeal.isEmpty());
+		assertTrue(toDeal.isEmpty()); //shows all cards dealt
 		Player human = game.getPlayer();
 		int numCards = human.getCards().size();
 		LinkedList<ComputerPlayer> ais = game.getComps();
 		for (ComputerPlayer c : ais) {
-			assertFalse((Math.abs(c.getCards().size()-numCards) > 1));
+			assertFalse((Math.abs(c.getCards().size()-numCards) > 1)); //test if hands are similar size
 		}
 		HashSet<Card> cardsDealt = new HashSet<Card>();
+		int numDealt = 0;
 		for (Card c : human.getCards()) {
 			cardsDealt.add(c);
+			numDealt++;
 		}
 		for (ComputerPlayer ai : ais) {
 			for (Card c : ai.getCards()) {
 				cardsDealt.add(c);
+				numDealt++;
 			}
 		}
-		assertEquals(21, cardsDealt.size());
+		for (Card c : game.getAnswer()) {
+			cardsDealt.add(c);
+			numDealt++;
+		}
+		assertEquals(numDealt, 21); //checks all cards dealt
+		assertEquals(21, cardsDealt.size()); //check that all cards only dealt once
 	}
 }

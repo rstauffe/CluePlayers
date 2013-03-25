@@ -23,11 +23,19 @@ public class Card {
 		}
 	}
 
-	public boolean equals(Card other) {
-		if (other == null) return false;
-		return ((other.type == type) && (other.name == name));
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) return true; //if same, return true
+		if (!(other instanceof Card)) return false; //if not the same type, return false
+		Card otherCard = (Card) other; //wrap card (known to be Card from previous line)
+		return ((otherCard.type == type) && otherCard.name.equals(name)); //perform comparison
 	}
-	
+		
+	@Override
+	public String toString() {
+		return "Card [name=" + name + ", type=" + type + "]";
+	}
+
 	public String getName() {
 		return name;
 	}
