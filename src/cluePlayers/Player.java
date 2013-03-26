@@ -35,7 +35,6 @@ public class Player {
 			if ((d.equals(c)) || (d.equals(b)) || (d.equals(a))) matches.add(d);
 		}
 		if (!matches.isEmpty()) {
-			//System.out.println(name + " has " + matches);
 			return matches.get(rand.nextInt(matches.size())); //returns a random card from hand if matching
 		}	
 		return null; 

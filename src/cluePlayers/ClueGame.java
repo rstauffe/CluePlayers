@@ -156,7 +156,6 @@ public class ClueGame {
 
 	public void sortList(LinkedList<Card> people, LinkedList<Card> weapons, 
 			LinkedList<Card> rooms, LinkedList<Card> toSort) { //method that sorts a list into the different types of cards
-		//System.out.println("Starting sort of " + toSort);
 		for (Card d : toSort) {
 			switch (d.getType()) {
 			case PERSON:
@@ -166,14 +165,12 @@ public class ClueGame {
 				weapons.add(d);
 				continue;
 			case ROOM:
-				//System.out.println("counting room");
 				rooms.add(d);
 				continue; 
 			default:
 				continue;
 			}
 		}
-		//System.out.println(people.size() + ", " + weapons.size() + ", " + rooms.size());
 	}
 
 	public LinkedList<Card> getCards() {

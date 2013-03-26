@@ -36,13 +36,10 @@ public class GameActionTests {
 		Player player = new HumanPlayer("Miss Scarlett", "Red", 0);
 		HashSet<Card> accuse = player.makeAccusation(new Card("Mrs White", "Person"), 
 				new Card("Wrench", "Weapon"), new Card("Pool", "Room"));
-		System.out.println(answer);
-		System.out.println(accuse);
-		for (Card c : answer) {
-			System.out.println(c);
-			System.out.println(accuse.contains(c));
-			assertTrue(accuse.contains(c));
-		}
+		HashSet<Card> difference = (HashSet<Card>) accuse.clone();
+		difference.removeAll(answer);
+		assertEquals(answer.size(), accuse.size());
+		assertTrue(difference.isEmpty());
 	}
 
 	@Test
@@ -55,7 +52,11 @@ public class GameActionTests {
 		Player player = new HumanPlayer("Miss Scarlett", cards, "Red", 0);
 		HashSet<Card> accuse = player.makeAccusation(new Card("Colonel Mustard", "Person"), 
 				new Card("Wrench", "Weapon"), new Card("Pool", "Room"));
-		assertFalse(accuse.equals(answer));
+		HashSet<Card> difference = (HashSet<Card>) accuse.clone();
+		difference.removeAll(answer);
+		assertEquals(answer.size(), accuse.size());
+		assertEquals(difference.size(), 1);
+		assertTrue(difference.contains(new Card("Colonel Mustard", "Person")));
 	}
 
 	@Test
@@ -68,7 +69,11 @@ public class GameActionTests {
 		Player player = new HumanPlayer("Miss Scarlett", cards, "Red", 0);
 		HashSet<Card> accuse = player.makeAccusation(new Card("Mrs White", "Person"), 
 				new Card("Candlestick", "Weapon"), new Card("Pool", "Room"));
-		assertFalse(accuse.equals(answer));
+		HashSet<Card> difference = (HashSet<Card>) accuse.clone();
+		difference.removeAll(answer);
+		assertEquals(answer.size(), accuse.size());
+		assertEquals(difference.size(), 1);
+		assertTrue(difference.contains(new Card("Candlestick", "Weapon")));
 	}
 
 	@Test
@@ -81,7 +86,11 @@ public class GameActionTests {
 		Player player = new HumanPlayer("Miss Scarlett", cards, "Red", 0);
 		HashSet<Card> accuse = player.makeAccusation(new Card("Mrs White", "Person"), 
 				new Card("Wrench", "Weapon"), new Card("Bowling Alley", "Room"));
-		assertFalse(accuse.equals(answer));
+		HashSet<Card> difference = (HashSet<Card>) accuse.clone();
+		difference.removeAll(answer);
+		assertEquals(answer.size(), accuse.size());
+		assertEquals(difference.size(), 1);
+		assertTrue(difference.contains(new Card("Bowling Alley", "Room")));
 	}
 
 	@Test
